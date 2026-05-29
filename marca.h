@@ -34,4 +34,45 @@ public:
 
     int getId() { return id_marca; }
     string getMarca() { return marca; }
+    void crear() {
+    if (!validarMarca(marca)) return;
+    try {
+        ConexionDB db;
+        if (!db.conectar()) return;
+
+        db.getSession()->sql(
+            "INSERT INTO supermercado.marcas (marca) VALUES (?)"
+        ).bind(marca).execute();
+
+        cout << "Marca creada exitosamente." << endl;
+        db.desconectar();
+    }
+    catch (const exception& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+}
+
+void leer() {
+    try {
+        ConexionDB db;
+        if (!db.conectar()) return;
+
+        auto resultado = db.getSession()->sql(
+            "SELECT id_marca, marca FROM supermercado.marcas"
+        ).execute();
+
+        cout << "\n===== LISTA DE MARCAS =====" << endl;
+        cout << "ID\tMARCA" << endl;
+        cout << "------------------------" << endl;
+
+        for (mysqlx::Row fila : resultado.fetchAll()) {
+            cout << fila[0] << "\t" << fila[1] << endl;
+        }
+
+        db.desconectar();
+    }
+    catch (const exception& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+}
 };
