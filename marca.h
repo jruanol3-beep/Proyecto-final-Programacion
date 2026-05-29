@@ -75,4 +75,44 @@ void leer() {
         cout << "Error: " << e.what() << endl;
     }
 }
+void actualizar() {
+    if (!validarMarca(marca)) return;
+
+    try {
+        ConexionDB db;
+        if (!db.conectar()) return;
+
+        db.getSession()->sql(
+            "UPDATE supermercado.marcas SET marca = ? WHERE id_marca = ?"
+        ).bind(marca, id_marca).execute();
+
+        cout << "Marca actualizada exitosamente." << endl;
+        db.desconectar();
+    }
+    catch (const exception& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+}
+
+void borrar() {
+    if (id_marca <= 0) {
+        cout << "Error: ID invalido." << endl;
+        return;
+    }
+
+    try {
+        ConexionDB db;
+        if (!db.conectar()) return;
+
+        db.getSession()->sql(
+            "DELETE FROM supermercado.marcas WHERE id_marca = ?"
+        ).bind(id_marca).execute();
+
+        cout << "Marca eliminada exitosamente." << endl;
+        db.desconectar();
+    }
+    catch (const exception& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+}
 };
