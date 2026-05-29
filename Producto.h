@@ -75,4 +75,53 @@ public:
     double getPrecioCosto() { return precio_costo; }
     double getPrecioVenta() { return precio_venta; }
     int getExistencia() { return existencia; }
+    
+    bool buscarPorId(int id) {
+
+    try {
+
+        ConexionDB db;
+
+        if (!db.conectar()) return false;
+
+        auto resultado = db.getSession()->sql(
+            "SELECT p.id_producto,p.producto,m.marca,"
+            "p.precio_venta,p.existencia "
+            "FROM supermercado.productos p "
+            "INNER JOIN supermercado.marcas m "
+            "ON p.id_marca = m.id_marca "
+            "WHERE p.id_producto=?"
+        ).bind(id).execute();
+
+        db.desconectar();
+
+        if (resultado.count() > 0) {
+
+            auto fila = resultado.fetchOne();
+
+            id_producto = (int)fila[0];
+            producto = fila[1].get<string>();
+            precio_venta = (double)fila[3];
+            existencia = (int)fila[4];
+
+            cout << "Producto: " << fila[1]
+                 << " | Marca: " << fila[2]
+                 << " | Precio: Q" << fila[3]
+                 << " | Existencia: " << fila[4]
+                 << endl;
+
+            return true;
+        }
+
+        cout << "Producto no encontrado." << endl;
+
+        return false;
+    }
+    catch (const exception& e) {
+
+        cout << "Error: " << e.what() << endl;
+
+        return false;
+    }
+}
 };
