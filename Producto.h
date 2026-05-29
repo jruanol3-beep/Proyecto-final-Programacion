@@ -76,7 +76,142 @@ public:
     double getPrecioVenta() { return precio_venta; }
     int getExistencia() { return existencia; }
     
-    bool buscarPorId(int id) {
+void crear() {
+
+    if (!validarTexto(producto, "Producto", 50)) return;
+
+    if (id_marca <= 0) {
+        cout << "Error: ID de marca invalido." << endl;
+        return;
+    }
+
+    if (!validarPrecio(precio_costo, "Precio costo")) return;
+    if (!validarPrecio(precio_venta, "Precio venta")) return;
+
+    try {
+
+        ConexionDB db;
+
+        if (!db.conectar()) return;
+
+        db.getSession()->sql(
+            "INSERT INTO supermercado.productos "
+            "(producto,id_marca,descripcion,imagen,"
+            "precio_costo,precio_venta,existencia) "
+            "VALUES (?,?,?,?,?,?,?)"
+        ).bind(
+            producto,
+            id_marca,
+            descripcion,
+            imagen,
+            precio_costo,
+            precio_venta,
+            existencia
+        ).execute();
+
+        cout << "Producto creado exitosamente." << endl;
+
+        db.desconectar();
+    }
+    catch (const exception& e) {
+
+        cout << "Error: " << e.what() << endl;
+    }
+}
+
+void leer() {
+
+    try {
+
+        ConexionDB db;
+
+        if (!db.conectar()) return;
+
+        auto resultado = db.getSession()->sql(
+            "SELECT p.id_producto,p.producto,m.marca,"
+            "p.precio_costo,p.precio_venta,p.existencia "
+            "FROM supermercado.productos p "
+            "INNER JOIN supermercado.marcas m "
+            "ON p.id_marca = m.id_marca"
+        ).execute();
+
+        cout << "\n===== PRODUCTOS =====" << endl;
+
+        for (mysqlx::Row fila : resultado.fetchAll()) {
+
+            cout << fila[0] << " | "
+                 << fila[1] << " | "
+                 << fila[2] << " | "
+                 << fila[3] << " | "
+                 << fila[4] << " | "
+                 << fila[5] << endl;
+        }
+
+        db.desconectar();
+    }
+    catch (const exception& e) {
+
+        cout << "Error: " << e.what() << endl;
+    }
+}
+
+void actualizar() {
+
+    try {
+
+        ConexionDB db;
+
+        if (!db.conectar()) return;
+
+        db.getSession()->sql(
+            "UPDATE supermercado.productos "
+            "SET producto=?,id_marca=?,descripcion=?,"
+            "imagen=?,precio_costo=?,precio_venta=?,"
+            "existencia=? WHERE id_producto=?"
+        ).bind(
+            producto,
+            id_marca,
+            descripcion,
+            imagen,
+            precio_costo,
+            precio_venta,
+            existencia,
+            id_producto
+        ).execute();
+
+        cout << "Producto actualizado." << endl;
+
+        db.desconectar();
+    }
+    catch (const exception& e) {
+
+        cout << "Error: " << e.what() << endl;
+    }
+}
+
+void borrar() {
+
+    try {
+
+        ConexionDB db;
+
+        if (!db.conectar()) return;
+
+        db.getSession()->sql(
+            "DELETE FROM supermercado.productos "
+            "WHERE id_producto=?"
+        ).bind(id_producto).execute();
+
+        cout << "Producto eliminado." << endl;
+
+        db.desconectar();
+    }
+    catch (const exception& e) {
+
+        cout << "Error: " << e.what() << endl;
+    }
+}
+bool buscarPorId(int id) {
 
     try {
 
