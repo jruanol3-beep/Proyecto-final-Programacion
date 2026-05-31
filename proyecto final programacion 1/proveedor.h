@@ -21,7 +21,6 @@ private:
         }
         return true;
     }
-
     bool validarNIT(string n) {
         if (n.empty()) {
             cout << "Error: El NIT no puede estar vacio." << endl;
@@ -32,7 +31,6 @@ private:
             cout << "Error: NIT invalido. Formato: 123456-K o CF" << endl;
             return false;
         }
-
         return true;
     }
 
@@ -45,7 +43,6 @@ public:
         direccion = dir;
         telefono = tel;
     }
-
     void setId(int id) { id_proveedor = id; }
     void setProveedor(string p) { proveedor = p; }
     void setNit(string n) { nit = n; }
@@ -75,7 +72,6 @@ public:
             cout << "Error: " << e.what() << endl;
         }
     }
-
     void leer() {
         try {
             ConexionDB db;
