@@ -4,13 +4,11 @@
 #include <string>
 #include <regex>
 using namespace std;
-
 class Cliente {
 private:
     int id_cliente;
     string nombres, apellidos, nit, telefono, correo_electronico;
     int genero;
-
     bool validarTexto(string texto, string campo, int maxLen) {
         if (texto.empty()) {
             cout << "Error: " << campo << " no puede estar vacio." << endl;
@@ -22,7 +20,6 @@ private:
         }
         return true;
     }
-
     bool validarNombre(string nombre, string campo) {
         if (nombre.empty()) {
             cout << "Error: " << campo << " no puede estar vacio." << endl;
@@ -40,7 +37,6 @@ private:
         }
         return true;
     }
-
     bool validarNIT(string n) {
         if (n.empty()) {
             cout << "Error: El NIT no puede estar vacio." << endl;
@@ -51,10 +47,8 @@ private:
             cout << "Error: NIT invalido. Formato: 123456-K o CF" << endl;
             return false;
         }
-
         return true;
     }
-
 public:
     Cliente() { id_cliente = 0; genero = 0; }
     Cliente(int id, string nom, string ape, string n, int gen, string tel, string correo) {
@@ -66,7 +60,6 @@ public:
         telefono = tel;
         correo_electronico = correo;
     }
-
     void setId(int id) { id_cliente = id; }
     void setNombres(string n) { nombres = n; }
     void setApellidos(string a) { apellidos = a; }
@@ -81,7 +74,6 @@ public:
     int getGenero() { return genero; }
     string getTelefono() { return telefono; }
     string getCorreo() { return correo_electronico; }
-
     int buscarPorNit(string n) {
         try {
             ConexionDB db;
@@ -102,7 +94,6 @@ public:
             return -1;
         }
     }
-
     void crear() {
         if (!validarNombre(nombres, "Nombres")) return;
         if (!validarNombre(apellidos, "Apellidos")) return;
@@ -124,7 +115,6 @@ public:
             cout << "Error: " << e.what() << endl;
         }
     }
-
     void leer() {
         try {
             ConexionDB db;
@@ -144,7 +134,6 @@ public:
             cout << "Error: " << e.what() << endl;
         }
     }
-
     void actualizar() {
         if (!validarNombre(nombres, "Nombres")) return;
         if (!validarNombre(apellidos, "Apellidos")) return;
@@ -162,7 +151,6 @@ public:
             cout << "Error: " << e.what() << endl;
         }
     }
-
     void borrar() {
         if (id_cliente <= 0) {
             cout << "Error: ID invalido." << endl;
